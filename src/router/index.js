@@ -46,6 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
+    // 加载出来 layout 立刻跳转至 dashboard
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',

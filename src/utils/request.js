@@ -4,7 +4,9 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
+// 建议通过 axios.create 创建 axios 实例
 const service = axios.create({
+  // 解析环境变量中的 baseUrl 地址
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
