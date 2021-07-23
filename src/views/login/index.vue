@@ -8,27 +8,32 @@
       auto-complete="on"
       label-position="left"
     >
+      <!-- 登录logo -->
       <div class="title-container">
         <h3 class="title">
           <img src="@/assets/common/login-logo.png" alt="">
         </h3>
       </div>
+      <!--/ 登录logo -->
 
-      <el-form-item prop="username">
+      <!-- 输入账号 -->
+      <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="mobile"
+          v-model="loginForm.mobile"
+          placeholder="mobile"
+          name="mobile"
           type="text"
           tabindex="1"
           auto-complete="on"
         />
       </el-form-item>
+      <!--/ 输入账号 -->
 
+      <!-- 输入密码 -->
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -50,7 +55,9 @@
           />
         </span>
       </el-form-item>
+      <!--/ 输入密码 -->
 
+      <!-- 登录按钮 -->
       <el-button
         class="loginBtn"
         :loading="loading"
@@ -58,43 +65,52 @@
         style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="handleLogin"
       >登 录</el-button>
+      <!--/ 登录按钮 -->
 
       <div class="tips">
-        <span style="margin-right: 20px">账号: 13800000002</span>
-        <span> 密码: 123456</span>
+        <span style="margin-right: 20px"> 账号: 13800000002 </span>
+        <span> 密码: 123456 </span>
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validMobile } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
+    // 自定义校验函数
+    const validateMobile = function(rule, value, callback) {
+      validMobile(value) ? callback() : callback(new Error('手机号格式不正确'))
     }
     return {
+      // 表单数据对象需要校验的字段
       loginForm: {
-        username: 'admin',
+        mobile: '13912345678',
         password: '111111'
       },
+      // 校验规则
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        mobile: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateMobile
+          }],
+        password: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '密码不能为空'
+          },
+          {
+            min: 6,
+            max: 16,
+            message: '密码的长度在6-16位之间 ',
+            trigger: 'blur'
+          }]
       },
       loading: false,
       passwordType: 'password',
@@ -111,11 +127,9 @@ export default {
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+      // 切换密码框的 type 属性
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password'
+      // 等待DOM更新完成后，将焦点聚焦在密码框上
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
