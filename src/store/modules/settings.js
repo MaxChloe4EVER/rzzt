@@ -1,5 +1,6 @@
+// 从 src 下的 settings 引入到这里
 import defaultSettings from '@/settings'
-
+// 解构三个属性，此为 设置 头部 和 logo 的相关设置
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
