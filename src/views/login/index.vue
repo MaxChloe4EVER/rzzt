@@ -88,8 +88,8 @@ export default {
     return {
       // 表单数据对象需要校验的字段
       loginForm: {
-        mobile: '13912345678',
-        password: '111111'
+        mobile: '13800000002',
+        password: '123456'
       },
       // 校验规则
       loginRules: {
@@ -97,7 +97,13 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            validator: validateMobile
+            message: '手机号不能为空'
+          },
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateMobile,
+            message: '手机号格式不正确'
           }],
         password: [
           {
@@ -108,7 +114,7 @@ export default {
           {
             min: 6,
             max: 16,
-            message: '密码的长度在6-16位之间 ',
+            message: '密码长度在6-16位之间 ',
             trigger: 'blur'
           }]
       },
@@ -159,7 +165,7 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg: #283443;
-$light_gray: #68b0fe;
+$light_gray: #68b0fe; // 将输入框颜色改为蓝色
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -170,7 +176,8 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  background: url("~@/assets/common/login.jpg") center center;
+  // 设置登录页面的背景
+  background: url("~@/assets/common/login.jpg") no-repeat center;
   .el-input {
     display: inline-block;
     height: 47px;
