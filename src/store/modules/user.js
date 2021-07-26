@@ -2,7 +2,7 @@
 import { getToken, setToken, removeToken } from '@/utils/auth.js'
 // 引入登录接口
 import { login } from '@/api/user'
-// 存储状态
+// 设置 state 存储全局数据
 const state = {
   // 设置token
   token: getToken() || null // 每次初始化优先从缓存中读取
@@ -22,14 +22,14 @@ const mutations = {
 
 const actions = {
   async login(context, data) {
+    // 调用登录的接口，发起请求
     const result = await login(data)
-    if (result.data.success) {
-      // 调用 mutations 中的方法，处理 token
-      context.commit('setToken', result.data.data)
-    }
+    // 调用 mutations 中的 setToken 方法，将新用户的 token 传给 state，实现响应式
+    context.commit('setToken', result)
   }
 }
 
+// 暴露一个配置对象
 export default {
   // 打开命名控件
   namespaced: true,
