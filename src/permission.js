@@ -6,13 +6,20 @@ import 'nprogress/nprogress.css' // 引入进度条样式
 
 const whiteList = ['/login', '/404'] // 设置白名单，这些路由不需要权限也能访问
 
-router.beforeEach(function(to, from, next) {
+router.beforeEach(async function(to, from, next) {
   // 跳转页面时进度条开启
   NProgress.start()
+  // 判断有没有 token
   if (store.getters.token) {
     if (to.path === '/login') {
+      // 表示去的是登录页
       next('/') // 当通过了导航守卫后需要跳转到哪个路由
     } else {
+      if (!store.getters.userId) {
+        // 如果没有id这个值 才会调用 vuex的获取资料的action
+        // 为什么要写await 因为我们想获取完资料再去放行
+        await store.dispatch('user/getUserInfo')
+      }
       next() // 直接跳转到需要访问的页面
     }
   } else {

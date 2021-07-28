@@ -9,10 +9,12 @@ export default {
   component: layout,
   children: [
     {
-      path: '',
+      path: '', // 这里不需要写 path，不写就说明这个二级路由是一级路由的默认路由
       component: () => import('@/views/employees'),
+      // 路由的其他信息
       meta: {
-        title: '员工管理'
+        title: '员工管理',
+        icon: 'people'
       }
     }
   ]

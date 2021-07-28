@@ -115,3 +115,34 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+export function tranListToTreeData(list, rootValue) {
+  // 要将扁平的数据转化为以下形式：
+  // {
+  //   name: '总裁办',
+  //   manager: '曹操',
+  //   children: [
+  //     {
+  //       name: '董事会',
+  //       manager: '曹丕'
+  //     }
+  //   ]
+  // },
+  var arr = []
+  // 有数据才进行遍历递归操作
+  list && list.forEach(item => {
+    if (item.pid === rootValue) {
+      // 再从 list 里寻找需要的数据
+      const children = tranListToTreeData(list, item.id)
+      // 判断是否找到再下一级的树节点
+      if (children.length !== 0) {
+        // 将下级树节点的数据设置给 本级树节点的 children属性
+        item.children = children
+      }
+      // 将处理好的每个 item 再 push 进 arr
+      arr.push(item)
+    }
+  })
+  // 返回结果
+  return arr
+}
