@@ -14,7 +14,7 @@
         <el-col>{{ treeNode.manager }}</el-col>
         <el-col>
           <!-- 放置下拉菜单 -->
-          <el-dropdown>
+          <el-dropdown @command="operateDepts">
             <!-- 内容 -->
             <span>操作
               <i class="el-icon-arrow-down" />
@@ -22,9 +22,15 @@
             <!-- 具名插槽 -->
             <el-dropdown-menu slot="dropdown">
               <!-- 下拉选项 -->
-              <el-dropdown-item>添加子部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">编辑部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">删除部门</el-dropdown-item>
+              <el-dropdown-item command="add">添加子部门</el-dropdown-item>
+              <el-dropdown-item
+                v-if="!isRoot"
+                command="edit"
+              >编辑部门</el-dropdown-item>
+              <el-dropdown-item
+                v-if="!isRoot"
+                command="del"
+              >删除部门</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -36,6 +42,7 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departments'
 export default {
   name: '',
   components: {},
@@ -56,10 +63,33 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    async operateDepts(type) {
+      if (type === 'add') {
+        this.$emit('addDepts', this.treeNode)
+      } else if (type === 'edit') {
+        console.log('编辑')
+      } else {
+        this.$confirm('是否删除此部门?', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning'
+        }).then(() => {
+          // 点击“是”跳到这一步，调接口删除对应id的部门
+          return delDepartments(this.treeNode.id)
+        }).then(() => {
+          // 调接口成功后跳到这一步，更新父组件的数据并提示
+          this.$emit('delDepts')
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
-
 </style>

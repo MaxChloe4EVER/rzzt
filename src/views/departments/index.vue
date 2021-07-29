@@ -12,23 +12,26 @@
           style="width: 100%"
         >
           <!-- 树形结构内部会自动遍历传入的数据，得到每一个树节点 -->
-          <TreeTools slot-scope="{ data }" :tree-node="data" />
+          <TreeTools slot-scope="{ data }" :tree-node="data" @delDepts="getDepartments" @addDepts="addDepts" />
         </el-tree>
         <!-- /树形结构 -->
       </el-card>
     </div>
+    <AddDept :show-dialog="showDialog" />
   </div>
 </template>
 
 <script>
 import TreeTools from './components/tree-tools'
+import AddDept from './components/add-dept'
 import { getDepartments } from '@/api/departments'
 
 import { tranListToTreeData } from '@/utils'
 
 export default {
   components: {
-    TreeTools
+    TreeTools,
+    AddDept
   },
   data() {
     return {
@@ -36,7 +39,11 @@ export default {
       departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
-      }
+      },
+      // 是否弹出 添加部门 的弹出框
+      showDialog: false,
+      // 记录在哪个节点下新增部门
+      node: {}
     }
   },
   created() {
@@ -47,7 +54,11 @@ export default {
       const res = await getDepartments()
       this.company = { name: res.companyName, manager: '负责人' }
       this.departs = tranListToTreeData(res.depts, '')
-      console.log(this.departs)
+    },
+    addDepts(node) {
+      this.showDialog = true
+      this.node = node
+      console.log(node)
     }
   }
 }
