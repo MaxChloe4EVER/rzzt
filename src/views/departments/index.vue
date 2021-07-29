@@ -17,7 +17,7 @@
         <!-- /树形结构 -->
       </el-card>
     </div>
-    <AddDept :show-dialog="showDialog" />
+    <AddDept :show-dialog="showDialog" :tree-node="node" />
   </div>
 </template>
 
@@ -52,11 +52,16 @@ export default {
   methods: {
     async getDepartments() {
       const res = await getDepartments()
-      this.company = { name: res.companyName, manager: '负责人' }
+      this.company = {
+        name: res.companyName,
+        manager: '负责人',
+        id: ''
+      }
       this.departs = tranListToTreeData(res.depts, '')
     },
     addDepts(node) {
       this.showDialog = true
+      // 将 treeTools 组件传来的父节点信息储存起来，传递给add-dept组件
       this.node = node
       console.log(node)
     }

@@ -66,6 +66,7 @@ export default {
   methods: {
     async operateDepts(type) {
       if (type === 'add') {
+        // 将当前父节点的信息存储起来，传递给 department的index 组件
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         console.log('编辑')
