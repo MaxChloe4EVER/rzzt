@@ -3,7 +3,7 @@
     <div class="app-container">
       <el-card class="tree-card">
         <!-- 用了一个行列布局 -->
-        <TreeTools :tree-node="company" :is-root="true" />
+        <TreeTools :tree-node="company" :is-root="true" @addDepts="addDepts" />
         <!-- 树形结构 -->
         <el-tree
           :data="departs"
@@ -11,13 +11,23 @@
           :default-expand-all="true"
           style="width: 100%"
         >
-          <!-- 树形结构内部会自动遍历传入的数据，得到每一个树节点 -->
-          <TreeTools slot-scope="{ data }" :tree-node="data" @delDepts="getDepartments" @addDepts="addDepts" />
+          <!-- 树形结构内部会自动遍历传入的数据，得到每一个树节点data -->
+          <TreeTools
+            slot-scope="{ data }"
+            :tree-node="data"
+            @delDepts="getDepartments"
+            @addDepts="addDepts"
+          />
         </el-tree>
         <!-- /树形结构 -->
       </el-card>
     </div>
-    <AddDept :show-dialog="showDialog" :tree-node="node" />
+    <AddDept
+      :show-dialog.sync="showDialog"
+      :tree-node="node"
+      @update="showDialog = $event"
+      @addDepts="getDepartments"
+    />
   </div>
 </template>
 
@@ -43,27 +53,29 @@ export default {
       // 是否弹出 添加部门 的弹出框
       showDialog: false,
       // 记录在哪个节点下新增部门
-      node: {}
+      node: null
     }
   },
   created() {
     this.getDepartments()
   },
   methods: {
+    // 获取所有部门，并将数据改造为树形结构渲染到界面上
     async getDepartments() {
       const res = await getDepartments()
       this.company = {
         name: res.companyName,
         manager: '负责人',
+        // 把 首部公司 的id 设为 ''，这就说明所有 pid='' 的树节点都是他的子节点，这样就将两者联系起来了
         id: ''
       }
       this.departs = tranListToTreeData(res.depts, '')
     },
+    // 添加子节点
     addDepts(node) {
       this.showDialog = true
       // 将 treeTools 组件传来的父节点信息储存起来，传递给add-dept组件
       this.node = node
-      console.log(node)
     }
   }
 }

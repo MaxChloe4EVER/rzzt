@@ -77,6 +77,7 @@ export default {
           type: 'warning'
         }).then(() => {
           // 点击“是”跳到这一步，调接口删除对应id的部门
+          // 将这个 promise return出来，再进行 .then 语法，不return是没办法继续使用.then方法
           return delDepartments(this.treeNode.id)
         }).then(() => {
           // 调接口成功后跳到这一步，更新父组件的数据并提示
