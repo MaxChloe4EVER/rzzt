@@ -66,10 +66,11 @@ export default {
   methods: {
     async operateDepts(type) {
       if (type === 'add') {
-        // 将当前父节点的信息存储起来，传递给 department的index 组件
+        // 将当前父节点的信息存储起来，传递给 department的index 组件, 再传递给 add-dept 组件
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
-        console.log('编辑')
+        // 将当前父节点的信息存储起来，传递给 department的index 组件, 再传递给 add-dept 组件
+        this.$emit('editDepts', this.treeNode)
       } else {
         this.$confirm('是否删除此部门?', '提示', {
           confirmButtonText: '是',

@@ -4,7 +4,6 @@ import layout from '@/layout'
 // 暴露路由规则
 export default {
   path: '/salarys',
-  name: 'salarys',
   component: layout,
   children: [
     {
