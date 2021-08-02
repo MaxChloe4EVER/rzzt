@@ -9,7 +9,7 @@
         <template #after>
           <el-button size="small" type="warning">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
-          <el-button size="small" type="primary">新增员工</el-button>
+          <el-button size="small" type="primary" @click="tanchu">新增员工</el-button>
         </template>
       </page-tools>
       <!-- 放置表格和分页 -->
@@ -71,6 +71,7 @@
         </el-row>
       </el-card>
     </div>
+    <AddEmployee :show-dialog.sync="showDialog" />
   </div>
 </template>
 
@@ -79,9 +80,16 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 // 引入枚举的信息
 import EmployeeEnum from '@/api/constant/employees'
 
+// 引入弹层组件
+import AddEmployee from './components/add-employee'
+
 export default {
+  components: {
+    AddEmployee
+  },
   data() {
     return {
+      showDialog: false,
       loading: false,
       list: [],
       page: {
@@ -127,6 +135,10 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    // 控制弹层弹出
+    tanchu() {
+      this.showDialog = true
     }
   }
 }
