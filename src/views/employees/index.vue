@@ -40,13 +40,17 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template>
+            <template v-slot="scope">
               <el-button type="text" size="small">查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="deleteEmployee(scope.row.id)"
+              >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -71,7 +75,7 @@
 </template>
 
 <script>
-import { getEmployeeList } from '@/api/employees'
+import { getEmployeeList, delEmployee } from '@/api/employees'
 // 引入枚举的信息
 import EmployeeEnum from '@/api/constant/employees'
 
@@ -99,6 +103,7 @@ export default {
       this.list = rows
       this.loading = false
     },
+    // 翻页操作
     changePage(page) {
       // 点击翻页会触发changePage事件，将跳转到的页码回传给page，再次发起请求
       this.page.page = page
@@ -111,6 +116,17 @@ export default {
       const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
       // formatter是类似于过滤器的属性，因此只需要将处理的数据return出来就可以了
       return obj ? obj.value : '未知'
+    },
+    // 删除员工
+    async deleteEmployee(id) {
+      try {
+        await this.$confirm('您确定删除该员工吗') // 点击确定执行之后的语句，点击取消直接进入 catch
+        await delEmployee(id)
+        this.getEmployeeList()
+        this.$message.success('删除员工成功')
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
