@@ -29,6 +29,12 @@ Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
 
+// 注册全局过滤器
+import * as filter from '@/filters'
+Object.keys(filter).forEach(key => {
+  Vue.filter(key, filter[key])
+})
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
