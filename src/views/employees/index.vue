@@ -7,7 +7,7 @@
           v-slot:name 只能作用于 template 模板标签上 -->
         <span slot="before">共166条记录</span>
         <template #after>
-          <el-button size="small" type="warning">导入</el-button>
+          <el-button size="small" type="warning" @click="jumpToImport">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
           <el-button size="small" type="primary" @click="tanchu">新增员工</el-button>
         </template>
@@ -139,6 +139,12 @@ export default {
     // 控制弹层弹出
     tanchu() {
       this.showDialog = true
+    },
+    // 跳转到 导入页面
+    jumpToImport() {
+      this.$router.push({
+        path: '/import?type=user'
+      })
     }
   }
 }
