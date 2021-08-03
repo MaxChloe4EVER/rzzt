@@ -7,9 +7,21 @@
           v-slot:name 只能作用于 template 模板标签上 -->
         <span slot="before">共166条记录</span>
         <template #after>
-          <el-button size="small" type="warning" @click="jumpToImport">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
-          <el-button size="small" type="primary" @click="tanchu">新增员工</el-button>
+          <el-button
+            size="small"
+            type="warning"
+            @click="jumpToImport"
+          >导入</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="exportData"
+          >导出</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            @click="tanchu"
+          >新增员工</el-button>
         </template>
       </page-tools>
       <!-- 放置表格和分页 -->
@@ -83,6 +95,9 @@ import EmployeeEnum from '@/api/constant/employees'
 // 引入弹层组件
 import AddEmployee from './components/add-employee'
 
+// 引入格式化时间的工具
+import { formatDate } from '@/filters'
+
 export default {
   components: {
     AddEmployee
@@ -145,6 +160,90 @@ export default {
       this.$router.push({
         path: '/import?type=user'
       })
+    },
+    // 导出excel数据
+    exportData() {
+      //  做操作
+      // 表头对应关系
+      const headers = {
+        姓名: 'username',
+        手机号: 'mobile',
+        入职日期: 'timeOfEntry',
+        聘用形式: 'formOfEmployment',
+        转正日期: 'correctionTime',
+        工号: 'workNumber',
+        部门: 'departmentName'
+      }
+      // 懒加载，只有代码运行到这里才进行加载
+      import('@/vendor/Export2Excel').then(async excel => {
+        const { rows } = await getEmployeeList({
+          page: 1,
+          size: this.page.total
+        })
+        // console.log(rows)
+        // console.log(Object.keys(headers))
+        const data = this.formatJson(headers, rows)
+
+        const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+        const merges = ['A1:A2', 'B1:F1', 'G1:G2']
+
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data,
+          filename: '员工信息表',
+          autoWidth: true,
+          bookType: 'xlsx',
+          multiHeader, // 复杂表头
+          merges // 合并选项
+        })
+        // 获取所有的数据
+
+        // excel.export_json_to_excel({
+        //   header: ['姓名', '薪资'],
+        //   data: [['张三', 12000], ['李四', 5000]],
+        //   filename: '员工薪资表',
+        //   autoWidth: true
+        // })
+      })
+    },
+    // 该方法负责将数组转化成二维数组
+    formatJson(headers, rows) {
+      // var arr = []
+      // rows.forEach(item => {
+      //   var itemAry = []
+      //   Object.keys(headers).forEach(key => {
+      //     itemAry.push(item[headers[key]])
+      //   })
+      //   arr.push(itemAry)
+      // })
+      // console.log(arr)
+      // return arr
+      // 首先遍历数组
+      // [{ username: '张三'},{},{}]  => [[’张三'],[],[]]
+      return rows.map((item) => {
+        return Object.keys(headers).map((key) => {
+          if (
+            headers[key] === 'timeOfEntry' ||
+            headers[key] === 'correctionTime'
+          ) {
+            return formatDate(item[headers[key]]) // 返回格式化之前的时间
+          } else if (headers[key] === 'formOfEmployment') {
+            var en = EmployeeEnum.hireType.find(
+              (obj) => obj.id === item[headers[key]]
+            )
+            return en ? en.value : '未知'
+          }
+          return item[headers[key]]
+        }) // => ["张三", "13811"，"2018","1", "2018", "10002"]
+      })
+      // return data
+      // return rows.map(item => {
+      //   // item是对象  => 转化成只有值的数组 => 数组值的顺序依赖headers  {username: '张三'  }
+      //   // Object.keys(headers)  => ["姓名", "手机号",...]
+      //   return Object.keys(headers).map(key => {
+      //     return item[headers[key]]
+      //   }) // /  得到 ['张三'，’129‘，’dd‘,'dd']
+      // })
     }
   }
 }
