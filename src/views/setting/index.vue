@@ -145,12 +145,7 @@ export default {
         }]
       },
       // 公司详情
-      formData: {
-        name: '',
-        companyAddress: '',
-        mailbox: '',
-        remarks: ''
-      },
+      formData: {},
       // 员工列表
       list: [],
       // 页码等信息
@@ -164,15 +159,16 @@ export default {
       showDialog: false
     }
   },
+  created() {
+    this.getRoleList()
+    this.getCompanyInfo()
+  },
+  // eslint-disable-next-line vue/order-in-components
   computed: {
     ...mapGetters(['companyId']),
     title() {
       return this.roleForm.id ? '编辑角色' : '新增角色'
     }
-  },
-  created() {
-    this.getRoleList()
-    this.getCompanyInfo()
   },
   methods: {
     // 获取角色列表

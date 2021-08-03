@@ -41,9 +41,11 @@ export function addRole(data) {
   })
 }
 
-// 获取公司信息
+/**
+ * 获取公司信息
+ * **/
 export function getCompanyInfo(companyId) {
   return request({
-    url: `/sys/role/${companyId}`
+    url: `/company/${companyId}`
   })
 }
